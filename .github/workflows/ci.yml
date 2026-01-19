@@ -1,53 +1,49 @@
 name: CI
 
 on:
-  push:
   pull_request:
+  push:
+    branches: [ "main" ]
 
 jobs:
-  tests:
+  test:
     runs-on: ubuntu-latest
 
     services:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_DATABASE: theatre
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: theatre_test
           MYSQL_USER: theatre
           MYSQL_PASSWORD: theatre
-          MYSQL_ROOT_PASSWORD: root
         ports:
           - 3306:3306
         options: >-
           --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
           --health-interval=5s
           --health-timeout=3s
-          --health-retries=20
+          --health-retries=30
 
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.2'
-          extensions: mbstring, intl, pdo_mysql
+          php-version: "8.3"
+          extensions: mbstring, intl, pdo_mysql, xml, zip
           coverage: none
 
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+      - run: composer install --no-interaction --prefer-dist
 
-      - name: Prepare env
+      - name: DB + migrations
+        env:
+          DATABASE_URL: "mysql://theatre:theatre@127.0.0.1:3306/theatre?serverVersion=8.0"
         run: |
-          cp .env .env.test.local
-          echo 'APP_ENV=test' >> .env.test.local
-          echo 'DATABASE_URL="mysql://theatre:theatre@127.0.0.1:3306/theatre?serverVersion=8.0&charset=utf8mb4"' >> .env.test.local
+          php bin/console doctrine:database:create --env=test
+          php bin/console doctrine:migrations:migrate --env=test -n
 
-      - name: Run migrations
-        run: |
-          php bin/console doctrine:database:create --if-not-exists --env=test
-          php bin/console doctrine:migrations:migrate --no-interaction --env=test
-
-      - name: Run tests
+      - name: PHPUnit
+        env:
+          DATABASE_URL: "mysql://theatre:theatre@127.0.0.1:3306/theatre_test?serverVersion=8.0"
         run: php bin/phpunit
