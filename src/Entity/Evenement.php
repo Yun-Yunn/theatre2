@@ -32,10 +32,10 @@ class Evenement
     private ?string $lieu = null;
 
     #[ORM\Column(nullable: true)]
-    private ?int $capacitÃe = null;
+    private ?int $capacite = null;
 
     #[ORM\Column(type: Types::DATE_IMMUTABLE)]
-    private ?\DateTimeImmutable $createdAT = null;
+    private ?\DateTimeImmutable $createdAt = null;
 
     #[ORM\ManyToOne(inversedBy: 'evenements')]
     #[ORM\JoinColumn(nullable: false)]
@@ -65,7 +65,6 @@ class Evenement
     public function setTitre(string $titre): static
     {
         $this->titre = $titre;
-
         return $this;
     }
 
@@ -77,7 +76,6 @@ class Evenement
     public function setDescription(?string $description): static
     {
         $this->description = $description;
-
         return $this;
     }
 
@@ -89,7 +87,6 @@ class Evenement
     public function setDateDebut(\DateTimeImmutable $dateDebut): static
     {
         $this->dateDebut = $dateDebut;
-
         return $this;
     }
 
@@ -101,7 +98,6 @@ class Evenement
     public function setDateFin(?\DateTimeImmutable $dateFin): static
     {
         $this->dateFin = $dateFin;
-
         return $this;
     }
 
@@ -113,31 +109,28 @@ class Evenement
     public function setLieu(string $lieu): static
     {
         $this->lieu = $lieu;
-
         return $this;
     }
 
-    public function getCapacitÃe(): ?int
+    public function getCapacite(): ?int
     {
-        return $this->capacitÃe;
+        return $this->capacite;
     }
 
-    public function setCapacitÃe(?int $capacitÃe): static
+    public function setCapacite(?int $capacite): static
     {
-        $this->capacitÃe = $capacitÃe;
-
+        $this->capacite = $capacite;
         return $this;
     }
 
-    public function getCreatedAT(): ?\DateTimeImmutable
+    public function getCreatedAt(): ?\DateTimeImmutable
     {
-        return $this->createdAT;
+        return $this->createdAt;
     }
 
-    public function setCreatedAT(\DateTimeImmutable $createdAT): static
+    public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
-        $this->createdAT = $createdAT;
-
+        $this->createdAt = $createdAt;
         return $this;
     }
 
@@ -149,7 +142,6 @@ class Evenement
     public function setAuteur(?Utilisateur $auteur): static
     {
         $this->auteur = $auteur;
-
         return $this;
     }
 
@@ -166,14 +158,12 @@ class Evenement
         if (!$this->categories->contains($category)) {
             $this->categories->add($category);
         }
-
         return $this;
     }
 
     public function removeCategory(Categorie $category): static
     {
         $this->categories->removeElement($category);
-
         return $this;
     }
 }
