@@ -14,7 +14,7 @@ jobs:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: theatre
+          MYSQL_DATABASE: theatre_test
           MYSQL_USER: theatre
           MYSQL_PASSWORD: theatre
         ports:
@@ -34,18 +34,18 @@ jobs:
           extensions: mbstring, intl, pdo_mysql, xml, zip
           coverage: none
 
-      - name: Install dependencies
-        run: composer install --no-interaction --prefer-dist
+      - run: composer install --no-interaction --prefer-dist
 
-      - name: Migrations (test)
+      - name: DB + migrations
         env:
           APP_ENV: test
-          DATABASE_URL: "mysql://theatre:theatre@127.0.0.1:3306/theatre?serverVersion=8.0&charset=utf8mb4"
+          DATABASE_URL: "mysql://theatre:theatre@127.0.0.1:3306/theatre?serverVersion=8.0"
         run: |
-          php bin/console doctrine:migrations:migrate -n --env=test
+
+          php bin/console doctrine:migrations:migrate -n
 
       - name: PHPUnit
         env:
-          APP_ENV: test
-          DATABASE_URL: "mysql://theatre:theatre@127.0.0.1:3306/theatre?serverVersion=8.0&charset=utf8mb4"
+        APP_ENV: test
+        DATABASE_URL: "mysql://theatre:theatre@127.0.0.1:3306/theatre?serverVersion=8.0"
         run: php bin/phpunit
