@@ -8,13 +8,15 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
-
+    env:
+          APP_ENV: test
+          DATABASE_URL: "mysql://theatre:theatre@127.0.0.1:3306/theatre?serverVersion=8.0"
     services:
       mysql:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: theatre
+          MYSQL_DATABASE: theatre_test
           MYSQL_USER: theatre
           MYSQL_PASSWORD: theatre
         ports:
@@ -37,15 +39,11 @@ jobs:
       - run: composer install --no-interaction --prefer-dist
 
       - name: DB + migrations
-        env:
-          APP_ENV: test
-          DATABASE_URL: "mysql://theatre:theatre@127.0.0.1:3306/theatre?serverVersion=8.0"
+        
         run: |
-
+         
           php bin/console doctrine:migrations:migrate -n
 
       - name: PHPUnit
-        env:
-        APP_ENV: test
-        DATABASE_URL: "mysql://theatre:theatre@127.0.0.1:3306/theatre?serverVersion=8.0"
+       
         run: php bin/phpunit
