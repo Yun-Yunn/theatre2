@@ -22,22 +22,25 @@ final class TestEntityFactory
         $user->setPassword($hasher->hashPassword($user, $plainPassword));
         $em->persist($user);
         $em->flush();
+
         return $user;
     }
+
     public static function createCategorie(
         EntityManagerInterface $em,
         ?string $nom = null,
-        ?string $slug = null,
-    ){
+        ?string $slug = null
+    ) {
         $categorie = new Categorie();
-        $categorie->setNom( $nom ?? ('cat '.uniqid()));
-        $categorie->setSlug( $slug ?? ('cat_'.uniqid()));
-        if(method_exists($categorie, 'setCreatedAt')){
+        $categorie->setNom($nom ?? ('cat ' . uniqid()));
+        $categorie->setSlug($slug ?? ('cat_' . uniqid()));
+
+        if (method_exists($categorie, 'setCreatedAt')) {
             $categorie->setCreatedAt(new DateTimeImmutable());
         }
-        $em->persist( $categorie);
 
+        $em->persist($categorie);
 
-            
-            }
+        return $categorie;
+    }
 }

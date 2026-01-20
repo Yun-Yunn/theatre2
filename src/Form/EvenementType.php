@@ -4,6 +4,7 @@ namespace App\Form;
 
 use App\Entity\Categorie;
 use App\Entity\Evenement;
+use App\Entity\Utilisateur;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -23,14 +24,19 @@ class EvenementType extends AbstractType
                 'widget' => 'single_text',
             ])
             ->add('lieu')
-            ->add('capacite', null, [
-                'label' => 'Capacité',
-            ])
+            ->add('capacite')
+            // ->add('createdAt', null, [
+            //     'widget' => 'single_text',
+            // ])
+            // ->add('auteur', EntityType::class, [
+            //     'class' => Utilisateur::class,
+            //     'choice_label' => 'id',
+            // ])
             ->add('categories', EntityType::class, [
                 'class' => Categorie::class,
                 'choice_label' => 'nom',
                 'multiple' => true,
-                'expanded' => true,
+                 'expanded' => true,
             ])
         ;
     }
